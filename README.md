@@ -1,5 +1,30 @@
 # Socket Chat Server
 
+## Environments
+
+| Name | Type | Description |
+| --- | --- | --- |
+| HTTP_API_KEY | string | Key to secure API requests |
+| REDIS_HOST | string | Redis host to connect. If you want to use external redis put host here |
+| REDIS_PORT | number | Redis port |
+| REDIS_DATA_PREFIX | string | Redis data prefix |
+| REDIS_AUTH_PASSWORD | string | Password to connect redis |
+| ALLOW_REQUEST_DOMAINS | string | Only accept requests certain domains. Eg: `foo.com, bar.me` |
+
+## Installation
+
+Step 1: Install all dependencies
+
+```bash
+yarn install
+```
+
+Step 2: Running
+
+```bash
+docker-compose up -d
+```
+
 ## Reference
 
 ### POST `/api/socket/events`

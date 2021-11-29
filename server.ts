@@ -8,9 +8,12 @@ import path from 'path'
 import ApiRoutes from './lib/routes/api'
 import ChannelHandler from './lib/socket/channel'
 import {URL} from 'url'
+import _ from 'lodash'
 
 const app = express()
 const server = http.createServer(app)
+
+const allowRequestDomains = (process.env.ALLOW_REQUEST_DOMAINS as string).split(',').map(value => _.trim(value))
 
 const io = new Server(server, {
   cors: {
@@ -22,8 +25,8 @@ const io = new Server(server, {
 
       const originUrl = new URL(requestOrigin)
       _debug('io cors hostname', originUrl.hostname)
-      if (!originUrl.hostname.endsWith('localhost')) {
-        callback(new Error('Invalid origin'), 'localhost')
+      if (allowRequestDomains.indexOf(originUrl.hostname) === -1) {
+        callback(new Error('Invalid origin'), originUrl.hostname)
 
         return
       }
@@ -41,7 +44,11 @@ const io = new Server(server, {
     }
 
     const url = new URL(origin)
-    callback(null, url.hostname.endsWith('localhost'))
+    if (allowRequestDomains.indexOf(url.hostname) >= 0) {
+      return
+    }
+
+    callback(null, false)
   },
 });
 

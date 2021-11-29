@@ -14,6 +14,7 @@ services:
       REDIS_PORT: '6379'
       REDIS_DATA_PREFIX: 'chat-server'
       REDIS_AUTH_PASSWORD: ''
+      ALLOW_REQUEST_DOMAINS: 'localhost'
     volumes:
       - ./:/app
   redis:
