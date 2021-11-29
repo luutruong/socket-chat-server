@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  node:
+    build:
+      context: ./
+      dockerfile: node.dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      HTTP_API_KEY: 'api-key'
+      REDIS_HOST: 'redis'
+      REDIS_PORT: '6379'
+      REDIS_DATA_PREFIX: 'chat-server'
+      REDIS_AUTH_PASSWORD: ''
+    volumes:
+      - ./:/app
+  redis:
+    image: redis:6.2.5-alpine
+    volumes:
+      - .data/redis:/data
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]

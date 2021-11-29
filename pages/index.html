@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Demo socket</title>
+  </head>
+  <body>
+    <script
+      src="https://cdn.socket.io/4.1.2/socket.io.min.js"
+      integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/enc-base64.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/md5.min.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+
+    <div id="output"></div>
+
+    <script>
+      var socket = io('http://localhost:3000', {
+        transport: ['websocket'],
+      })
+
+      var $output = $('#output')
+      function appendMessage(message) {
+        $('<p />')
+          .text(new Date().toLocaleString() + ': ' + message)
+          .appendTo($output)
+      }
+
+      socket.on('connect', function () {
+        appendMessage('connected to socket server')
+
+        var channelName = 'test-123'
+        var timestamp = Math.floor(Date.now() / 1000) + 60
+        var json = JSON.stringify({
+          channel: channelName,
+          timestamp: timestamp,
+          data: {
+            webhook_url: 'https://enshj6uzpmoq9.x.pipedream.net',
+          },
+        })
+        var apiKey = 'test-api-key'
+
+        var str = json + CryptoJS.MD5(json + apiKey).toString()
+        var base64 = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(str))
+        appendMessage('joinToken: ' + base64)
+
+        socket.emit('join', base64)
+
+        socket.on('user joined', function (data) {
+          appendMessage('user joined: ' + JSON.stringify(data))
+        })
+
+        socket.on('user left', function (data) {
+          appendMessage('user left: ' + JSON.stringify(data))
+        })
+      })
+    </script>
+  </body>
+</html>
