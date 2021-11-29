@@ -13,13 +13,7 @@
 
 ## Installation
 
-Step 1: Install all dependencies
-
-```bash
-yarn install
-```
-
-Step 2: Running
+Clone this repo to your working space then run the following command:
 
 ```bash
 docker-compose up -d
